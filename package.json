@@ -1,6 +1,6 @@
 {
   "name": "@j.u.p.iter/mongoose-db-provider",
-  "version": "0.0.2",
+  "version": "0.0.0-semantically-released",
   "description": "Mongoose database provider",
   "keywords": [
     "mongoose",
