@@ -1,0 +1,21 @@
+{
+  "name": "mongoose-db-provider",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:j-u-p-iter/mongoose-db-provider.git",
+  "author": "j.u.p.iter <pn79122821224@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@j.u.p.iter/jupiter-scripts": "^1.14.1",
+    "@types/mongoose": "^5.5.41",
+    "mongoose": "^5.8.7"
+  },
+  "scripts": {
+    "commit": "jupiter-scripts precommit --allowJs",
+    "build": "jupiter-scripts build --bundle",
+    "start": "yarn run build --watch",
+    "lint": "jupiter-scripts lint --format codeFrame",
+    "lint:fix": "yarn run lint --fix",
+    "test": "jupiter-scripts test"
+  }
+}
