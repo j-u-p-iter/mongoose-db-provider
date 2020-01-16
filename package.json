@@ -1,9 +1,16 @@
 {
-  "name": "mongoose-db-provider",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "@j.u.p.iter/mongoose-db-provider",
+  "version": "0.0.2",
+  "description": "Mongoose database provider",
+  "keywords": [
+    "mongoose",
+    "database provider"
+  ],
+  "main": "dist/lib/mongoose-db-provider.cjs.js",
+  "module": "dist/lib/mongoose-db-provider.esm.js",
+  "typings": "dist/types",
   "repository": "git@github.com:j-u-p-iter/mongoose-db-provider.git",
-  "author": "j.u.p.iter <pn79122821224@gmail.com>",
+  "author": "Leontyev Kirill (j.u.p.iter) <pn79122821224@gmail.com> (http://j-u-p-iter.pro/)",
   "license": "MIT",
   "devDependencies": {
     "@j.u.p.iter/jupiter-scripts": "^1.14.1",
@@ -17,5 +24,8 @@
     "lint": "jupiter-scripts lint --format codeFrame",
     "lint:fix": "yarn run lint --fix",
     "test": "jupiter-scripts test"
+  },
+  "peerDependencies": {
+    "mongoose": ">=5.8.7"
   }
 }
