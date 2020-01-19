@@ -13,7 +13,9 @@ export const createMongooseDBProvider: CreateMongooseDBProvider = connectionUrl 
   const connect = async () => {
     try {
       dbConnection = await mongoose.connect(connectionUrl, {
-        useNewUrlParser: true
+        useNewUrlParser: true,
+        useCreateIndex: true,
+        useUnifiedTopology: true
       });
     } catch (error) {
       console.error(error);

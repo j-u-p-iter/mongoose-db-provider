@@ -10,7 +10,7 @@
   "module": "dist/lib/mongoose-db-provider.esm.js",
   "typings": "dist/types",
   "repository": "git@github.com:j-u-p-iter/mongoose-db-provider.git",
-  "author": "Leontyev Kirill (j.u.p.iter) <pn79122821224@gmail.com> (http://j-u-p-iter.pro/)",
+  "author": "Leontyev Kirill (j.u.p.iter) <pn79122821224@gmail.com> (http://j-u-p-iter.ru/)",
   "license": "MIT",
   "devDependencies": {
     "@j.u.p.iter/jupiter-scripts": "^1.14.1",

@@ -68,6 +68,8 @@ describe("createMongooseDBProvider", () => {
 
       await provider.connect();
 
+      await provider.clearDB();
+
       let usersCount = await mongoose.connection.collections.users.count();
       let postsCount = await mongoose.connection.collections.posts.count();
 
