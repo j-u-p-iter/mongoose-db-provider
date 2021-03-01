@@ -13,9 +13,9 @@
   "author": "Leontyev Kirill (j.u.p.iter) <pn79122821224@gmail.com> (http://j-u-p-iter.ru/)",
   "license": "MIT",
   "devDependencies": {
-    "@j.u.p.iter/jupiter-scripts": "^1.14.1",
-    "@types/mongoose": "^5.5.41",
-    "mongoose": "^5.8.7"
+    "@j.u.p.iter/jupiter-scripts": "^1.17.0",
+    "@types/mongoose": "^5.10.3",
+    "mongoose": "^5.11.18"
   },
   "scripts": {
     "commit": "jupiter-scripts precommit --allowJs",
