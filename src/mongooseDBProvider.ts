@@ -1,6 +1,6 @@
 import { Mongoose } from "mongoose";
 
-interface MongooseDBProviderOptions {
+export interface MongooseDBProviderOptions {
   client: Mongoose;
   connectionURL: string;
 }
