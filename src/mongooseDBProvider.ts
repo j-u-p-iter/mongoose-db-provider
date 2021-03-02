@@ -1,60 +1,66 @@
-import mongoose from "mongoose";
+import { Mongoose } from "mongoose";
 
-interface DBProvider {
-  connect: () => Promise<any>;
-  close: () => void;
-  clearDB: () => Promise<void>;
+interface MongooseDBProviderOptions {
+  client: Mongoose;
+  connectionURL: string;
 }
 
-type CreateMongooseDBProvider = (connectionUrl: string) => DBProvider;
-export const createMongooseDBProvider: CreateMongooseDBProvider = connectionUrl => {
-  let dbConnection;
+export class MongooseDBProvider {
+  private mongooseClient = null;
 
-  const getAllCollections = () => {
-    return mongoose.connection.collections;
-  };
+  private connectionURL = "";
 
-  const getCollectionByName = collectionName => {
-    return getAllCollections()[collectionName];
-  };
+  private getAllCollections() {
+    return this.mongooseClient.connection.collections;
+  }
 
-  const deleteCollection = (collectionName: string) => {
-    return getCollectionByName(collectionName).deleteMany({});
-  };
+  private getCollectionByName(collectionName: string) {
+    return this.getAllCollections()[collectionName];
+  }
 
-  const connect = async () => {
-    try {
-      dbConnection = await mongoose.connect(connectionUrl, {
-        useNewUrlParser: true,
-        useCreateIndex: true,
-        useUnifiedTopology: true
-      });
-    } catch (error) {
-      console.error(error);
-    }
+  private deleteCollection(collectionName: string) {
+    return this.getCollectionByName(collectionName).deleteMany({});
+  }
+
+  constructor({ client, connectionURL }: MongooseDBProviderOptions) {
+    this.mongooseClient = client;
+    this.connectionURL = connectionURL;
+  }
+
+  public get isConnected() {
+    /**
+     * Equals to 1, when the connection is set up.
+     *   Equals to 0, when the connection is closed.
+     *
+     */
+    return this.mongooseClient.connection.readyState === 1;
+  }
+
+  public getCollectionLength(collectionName: string) {
+    return this.mongooseClient.connection.collections[collectionName].count();
+  }
+
+  public async connect() {
+    const dbConnection = await this.mongooseClient.connect(this.connectionURL, {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useUnifiedTopology: true
+    });
 
     return dbConnection;
-  };
+  }
 
-  const close = () => mongoose.connection.close();
+  public closeConnection() {
+    this.mongooseClient.connection.close();
+  }
 
-  const clearDB = async () => {
-    let clearDBResult;
-
-    try {
-      clearDBResult = await Promise.all(
-        Object.keys(getAllCollections()).map(deleteCollection)
-      );
-    } catch (error) {
-      console.log(error);
-    }
+  public async clearDB() {
+    const clearDBResult = await Promise.all(
+      Object.keys(this.getAllCollections()).map(
+        this.deleteCollection.bind(this)
+      )
+    );
 
     return clearDBResult;
-  };
-
-  return {
-    connect,
-    close,
-    clearDB
-  };
-};
+  }
+}

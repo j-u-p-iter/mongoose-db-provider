@@ -1,53 +1,54 @@
 import mongoose from "mongoose";
 
-import { createMongooseDBProvider } from ".";
+import { MongooseDBProvider } from ".";
 
-describe("createMongooseDBProvider", () => {
-  afterEach(async () => {
-    await mongoose.connection.close();
+const CONNECTION_URL = "mongodb://localhost:27017/test";
+
+describe("MongooseDBProvider", () => {
+  let mongooseDBProvider;
+  let createMongooseDBProvider;
+
+  beforeAll(() => {
+    createMongooseDBProvider = (connectionURL) => {
+      return new MongooseDBProvider({ 
+        connectionURL,
+        client: mongoose,
+      });
+    }      
+  });
+
+  afterEach(() => {
+    return mongooseDBProvider.closeConnection();
   });
 
   describe("connect", () => {
     describe("with valid connection url", () => {
       it("creates db connection", async () => {
-        const connection = await createMongooseDBProvider(
-          "mongodb://localhost:27017/test"
-        ).connect();
+        mongooseDBProvider = createMongooseDBProvider(
+          CONNECTION_URL
+        );
+
+        const connection = await mongooseDBProvider.connect();
 
         expect(connection.connections).toBeDefined();
         expect(connection.models).toBeDefined();
-      });
-    });
-
-    describe("with invalid connection url", () => {
-      it("writes error to console", async () => {
-        const consoleErrorSpy = jest
-          .spyOn(console, "error")
-          .mockImplementation(() => {});
-
-        await createMongooseDBProvider("invalid-connection-url").connect();
-
-        expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
-        expect(consoleErrorSpy.mock.calls.length).toBe(1);
       });
     });
   });
 
   describe("close", () => {
     it("closes connection", async () => {
-      const connectionSpy = jest.spyOn(mongoose.connection, "close");
-
-      const provider = createMongooseDBProvider(
-        "mongodb://localhost:27017/test"
+      mongooseDBProvider = createMongooseDBProvider(
+        CONNECTION_URL
       );
 
-      await provider.connect();
+      await mongooseDBProvider.connect();
 
-      expect(connectionSpy).toHaveBeenCalledTimes(0);
+      expect(mongooseDBProvider.isConnected).toBe(true);
 
-      await provider.close();
+      await mongooseDBProvider.closeConnection();
 
-      expect(connectionSpy).toHaveBeenCalledTimes(1);
+      expect(mongooseDBProvider.isConnected).toBe(false);
     });
   });
 
@@ -62,16 +63,16 @@ describe("createMongooseDBProvider", () => {
         new mongoose.Schema({ title: String })
       );
 
-      const provider = createMongooseDBProvider(
-        "mongodb://localhost:27017/test"
+      mongooseDBProvider = createMongooseDBProvider(
+        CONNECTION_URL
       );
 
-      await provider.connect();
+      await mongooseDBProvider.connect();
 
-      await provider.clearDB();
+      await mongooseDBProvider.clearDB();
 
-      let usersCount = await mongoose.connection.collections.users.count();
-      let postsCount = await mongoose.connection.collections.posts.count();
+      let usersCount = await mongooseDBProvider.getCollectionLength('users');
+      let postsCount = await mongooseDBProvider.getCollectionLength('posts');
 
       expect(usersCount).toBe(0);
       expect(postsCount).toBe(0);
@@ -81,19 +82,19 @@ describe("createMongooseDBProvider", () => {
         PostModel.create({ title: "Post title" })
       ]);
 
-      usersCount = await mongoose.connection.collections.users.count();
-      postsCount = await mongoose.connection.collections.posts.count();
+      usersCount = await mongooseDBProvider.getCollectionLength('users');
+      postsCount = await mongooseDBProvider.getCollectionLength('posts');
 
       expect(usersCount).toBe(1);
       expect(postsCount).toBe(1);
 
-      await provider.clearDB();
+      await mongooseDBProvider.clearDB();
 
-      //usersCount = await mongoose.connection.collections.users.count();
-      //postsCount = await mongoose.connection.collections.posts.count();
+      usersCount = await mongooseDBProvider.getCollectionLength('users');
+      postsCount = await mongooseDBProvider.getCollectionLength('posts');
 
-      //expect(usersCount).toBe(0);
-      //expect(postsCount).toBe(0);
+      expect(usersCount).toBe(0);
+      expect(postsCount).toBe(0);
     });
   });
 });

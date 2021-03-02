@@ -1,1 +1,1 @@
-export * from "./mongooseDBProvider";
+export * from "./MongooseDBProvider";
